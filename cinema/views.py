@@ -1,6 +1,11 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status, generics, mixins, viewsets
+from rest_framework import (
+    status,
+    generics,
+    mixins,
+    viewsets
+)
 
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
@@ -43,7 +48,7 @@ class GenreDetail(APIView):
 
     def put(self, request, pk):
         serializer = GenreSerializer(
-            self.get_object(pk=pk), data=request.data, partial=True
+            self.get_object(pk=pk), data=request.data,
         )
         if serializer.is_valid():
             serializer.save()
@@ -52,7 +57,7 @@ class GenreDetail(APIView):
 
     def patch(self, request, pk):
         genre = get_object_or_404(Genre, pk=pk)
-        serializer = GenreSerializer(genre, data=request.data)
+        serializer = GenreSerializer(genre, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

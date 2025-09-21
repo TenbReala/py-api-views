@@ -1,6 +1,11 @@
 from rest_framework import serializers
 
-from cinema.models import Movie, Actor, Genre, CinemaHall
+from cinema.models import (
+    Movie,
+    Actor,
+    Genre,
+    CinemaHall
+)
 
 
 class MovieSerializer(serializers.Serializer):
@@ -15,10 +20,6 @@ class MovieSerializer(serializers.Serializer):
     )
     duration = serializers.IntegerField()
 
-    class Meta:
-        model = Movie
-        fields = ("id", "title", "description", "actors", "genres", "duration")
-
     def create(self, validated_data):
         genres = validated_data.pop("genres", [])
         actors = validated_data.pop("actors", [])
@@ -28,8 +29,8 @@ class MovieSerializer(serializers.Serializer):
         return movie
 
     def update(self, instance, validated_data):
-        genres = validated_data.pop("genres", [])
-        actors = validated_data.pop("actors", [])
+        genres = validated_data.pop("genres", None)
+        actors = validated_data.pop("actors", None)
         for key, value in validated_data.items():
             setattr(instance, key, value)
         instance.save()
