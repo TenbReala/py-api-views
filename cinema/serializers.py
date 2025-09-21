@@ -7,25 +7,29 @@ class MovieSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(max_length=255)
     description = serializers.CharField()
-    actors = serializers.PrimaryKeyRelatedField(queryset=Actor.objects.all(), many=True, required=False)
-    genres = serializers.PrimaryKeyRelatedField(queryset=Genre.objects.all(), many=True, required=False)
+    actors = serializers.PrimaryKeyRelatedField(
+        queryset=Actor.objects.all(), many=True, required=False
+    )
+    genres = serializers.PrimaryKeyRelatedField(
+        queryset=Genre.objects.all(), many=True, required=False
+    )
     duration = serializers.IntegerField()
 
     class Meta:
         model = Movie
-        fields = ('id', 'title', 'description', 'actors', 'genres', 'duration')
+        fields = ("id", "title", "description", "actors", "genres", "duration")
 
     def create(self, validated_data):
-        genres = validated_data.pop('genres', [])
-        actors = validated_data.pop('actors', [])
+        genres = validated_data.pop("genres", [])
+        actors = validated_data.pop("actors", [])
         movie = Movie.objects.create(**validated_data)
         movie.genres.set(genres)
         movie.actors.set(actors)
         return movie
 
     def update(self, instance, validated_data):
-        genres = validated_data.pop('genres', [])
-        actors = validated_data.pop('actors', [])
+        genres = validated_data.pop("genres", [])
+        actors = validated_data.pop("actors", [])
         for key, value in validated_data.items():
             setattr(instance, key, value)
         instance.save()
@@ -46,8 +50,14 @@ class ActorSerializer(serializers.Serializer):
         return Actor.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.first_name = validated_data.get("first_name", instance.first_name)
-        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.first_name = validated_data.get(
+            "first_name",
+            instance.first_name
+        )
+        instance.last_name = validated_data.get(
+            "last_name",
+            instance.last_name
+        )
         instance.save()
         return instance
 
@@ -77,6 +87,8 @@ class CinemaHallSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
         instance.rows = validated_data.get("rows", instance.rows)
-        instance.seats_in_row = validated_data.get("seats_in_row", instance.seats_in_row)
+        instance.seats_in_row = validated_data.get(
+            "seats_in_row", instance.seats_in_row
+        )
         instance.save()
         return instance
